@@ -135,10 +135,15 @@ $ADFIRDownloadURL = "https://download.microsoft.com/download/e/4/7/e4771905-1079
 $ADFIRLocalFileName = $ADFIRDownloadURL.Split("/")[$ADFIRDownloadURL.Split("/").Length-1]                   #Get the .msi filename.
 $ADFIRInstallerLocalFileLocation = $ADFLocalDrive + '\' + $ADFLocalVMFolder + '\' + $ADFIRLocalFileName     #Local Path of downloaded installer.
 Write-Debug " Creating directory to download the SHIR installable."
-New-Item -Path ($ADFLocalDrive + '\' + $ADFLocalVMFolder) -Name $ADFLocalVMFolder -ItemType Directory -Force                            #'-Force' Ok if directory already exists.
+New-Item -Path "$ADFLocalDrive\$ADFLocalVMFolder) -ItemType Directory -Force                            #'-Force' Ok if directory already exists.
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-Write-Debug " Downloading the SHIR installable at $ADFIRInstallerLocalFileLocation."
-Invoke-WebRequest -Uri $ADFIRDownloadURL -OutFile $ADFIRInstallerLocalFileLocation                          #Download SHIR installable.
+if (!(Test-Path $ADFIRInstallerLocalFileLocation)) {
+    Write-Debug "Downloading the SHIR installable at $ADFIRInstallerLocalFileLocation."
+    Invoke-WebRequest -Uri $ADFIRDownloadURL -OutFile $ADFIRInstallerLocalFileLocation
+} else {
+    Write-Debug "SHIR installable already exists at $ADFIRInstallerLocalFileLocation. Skipping download."
+}
+
 
 #Validate-Input $path $authKey
 
