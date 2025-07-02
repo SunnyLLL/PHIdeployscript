@@ -1,15 +1,7 @@
 param(
     [Parameter()]
     [string]
-    $authKey = "#########",
-    [Alias("port")]
-    [Parameter(Mandatory=$false)]
-    [string]
-    $remoteAccessPort,
-    [Alias("cert")]
-    [Parameter(Mandatory=$false)]
-    [string]
-    $remoteAccessCertThumbprint
+    $authKey = "#########"
 )
 function Install-Gateway([string] $gwPath)
 {
@@ -28,28 +20,12 @@ function Install-Gateway([string] $gwPath)
     Write-Host "Succeed to install Microsoft Integration Runtime"
 }
 
-function Register-Gateway([string] $key, [string] $port, [string] $cert)
+function Register-Gateway([string] $key)
 {
+    Write-Debug " Start to register gateway with key: $key"
     $cmd = Get-CmdFilePath
-
-    if (![string]::IsNullOrEmpty($port))
-    {
-        Write-Host "Start to enable remote access."
-        $process = Start-Process $cmd "-era $port $cert" -Wait -PassThru -NoNewWindow
-        if ($process.ExitCode -ne 0)
-        {
-            throw "Failed to enable remote access. Exit code: $($process.ExitCode)"
-        }
-        Write-Host "Succeed to enable remote access."
-    }
-
-    Write-Host "Start to register Microsoft Integration Runtime with key: $key."
-    $process = Start-Process $cmd "-k $key" -Wait -PassThru -NoNewWindow
-    if ($process.ExitCode -ne 0)
-    {
-        throw "Failed to register Microsoft Integration Runtime. Exit code: $($process.ExitCode)"
-    }
-    Write-Host "Succeed to register Microsoft Integration Runtime."
+    Start-Process $cmd "-k $key" -Wait
+    Write-Debug " Succeed to register gateway"
 }
 
 function Check-WhetherGatewayInstalled([string]$name)
@@ -160,4 +136,4 @@ Write-Host "installation integration runtime is finished."
 #Validate-Input $path $authKey
 
 #Install-Gateway $ADFIRInstallerLocalFileLocation
-Register-Gateway $authKey $remoteAccessPort $remoteAccessCertThumbprint
+Register-Gateway $authKey
