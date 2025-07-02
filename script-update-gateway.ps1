@@ -145,7 +145,19 @@ if (!(Test-Path $ADFIRInstallerLocalFileLocation)) {
 }
 Write-Host " $ADFIRInstallerLocalFileLocation"
 Write-Host "Start to install integration runtime."
+$MSIInstallArguments = @(
+     "/i"
+     "$ADFIRInstallerLocalFileLocation"
+     "authKey='$authkey'"
+     "/qb!"
+     "/norestart"
+ )
+ #Write-Debug $MSIInstallArguments
+UnInstall-Gateway
+Start-Process "msiexec.exe" -ArgumentList $MSIInstallArguments  -Wait -NoNewWindow
+Write-Host "installation integration runtime is finished."
+
 #Validate-Input $path $authKey
 
-Install-Gateway $ADFIRInstallerLocalFileLocation
+#Install-Gateway $ADFIRInstallerLocalFileLocation
 Register-Gateway $authKey $remoteAccessPort $remoteAccessCertThumbprint
