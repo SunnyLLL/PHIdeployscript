@@ -144,7 +144,7 @@ if (!(Test-Path $ADFIRInstallerLocalFileLocation)) {
     Write-Debug "SHIR installable already exists at $ADFIRInstallerLocalFileLocation. Skipping download."
 }
 
-
+Write-Host "Start to install integration runtime."
 #Validate-Input $path $authKey
 
 Install-Gateway $ADFIRInstallerLocalFileLocation
