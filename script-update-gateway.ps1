@@ -1,7 +1,7 @@
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter()]
     [string]
-    $authKey,
+    $authKey = "#########",
     [Alias("port")]
     [Parameter(Mandatory=$false)]
     [string]
